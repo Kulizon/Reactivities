@@ -18,6 +18,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Cors
+builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy => {
+    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+}));
+
 var app = builder.Build();
 
 // Make migrations
@@ -41,7 +46,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
+// use routing here later
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
