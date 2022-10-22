@@ -1,4 +1,4 @@
-import { Activity } from "../../../Interfaces/Activity";
+import { Activity } from "../../../interfaces/Activity";
 
 import { Button, Form, Segment } from "semantic-ui-react";
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -7,15 +7,24 @@ interface Props {
   onEndEdit: () => void;
   editedActivity: Activity | undefined;
   editMode: boolean;
-  onSubmit: (editedActivity: Activity) => void;
+  onSubmitEdit: (editedActivity: Activity) => void;
+  isSubmitting: boolean;
+  onSubmitCreate: (activity: Activity) => void;
+  createMode: boolean;
+  onEndCreate: () => void;
 }
 
 const ActivityForm = ({
   onEndEdit,
   editedActivity,
   editMode,
-  onSubmit,
+  onSubmitEdit,
+  onSubmitCreate,
+  isSubmitting,
+  onEndCreate,
 }: Props) => {
+  const [target, setTarget] = useState("");
+
   const isEdited = editedActivity && editMode;
 
   const [activityFormState, setActivityFormState] = useState<Activity>({
@@ -40,9 +49,8 @@ const ActivityForm = ({
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(activityFormState);
-
-    onSubmit(activityFormState);
+    if (editMode) onSubmitEdit(activityFormState);
+    else onSubmitCreate(activityFormState);
   };
 
   return (
@@ -67,6 +75,7 @@ const ActivityForm = ({
           placeholder="Date"
           value={activityFormState.date}
           onChange={inputChangeHandler}
+          type="date"
         ></Form.Input>
         <Form.Input
           placeholder="City"
@@ -83,12 +92,13 @@ const ActivityForm = ({
           positive
           type="submit"
           content="Submit"
+          loading={isSubmitting}
         ></Button>
         <Button
           floated="right"
           type="submit"
           content="Cancel"
-          onClick={onEndEdit}
+          onClick={editMode ? onEndEdit : onEndCreate}
         ></Button>
       </Form>
     </Segment>

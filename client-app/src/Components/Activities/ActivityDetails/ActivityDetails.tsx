@@ -1,5 +1,4 @@
-import { Activity } from "../../../Interfaces/Activity";
-
+import { Activity } from "../../../interfaces/Activity";
 
 import { Button, Card, Image } from "semantic-ui-react";
 
