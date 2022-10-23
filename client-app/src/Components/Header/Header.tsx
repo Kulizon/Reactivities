@@ -1,30 +1,29 @@
 import { Button, Container, Menu } from "semantic-ui-react";
-import { useStore } from "../../stores/store";
+import { NavLink } from "react-router-dom";
 
 import styles from "./Header.module.scss";
 
 const Header = () => {
-  const { openForm, cancelHighlightedActivity } = useStore().activityStore;
-
-  const openCreateFormHandler = () => {
-    openForm();
-    cancelHighlightedActivity();
-  };
-
   return (
     <Menu inverted fixed="top" className={styles.header}>
       <Container>
-        <Menu.Item header>
+        <Menu.Item header as={NavLink} to="/" end="true">
           <img src="assets/logo.png" alt="Logo" />
           Reactivities
         </Menu.Item>
         <div>
-          <Menu.Item name="Activities"></Menu.Item>
+          <Menu.Item
+            name="Activities"
+            as={NavLink}
+            to="/activities"
+            end="true"
+          ></Menu.Item>
           <Menu.Item name="Activities">
             <Button
               positive
               content="Create Activity"
-              onClick={openCreateFormHandler}
+              as={NavLink}
+              to="/create-activity"
             ></Button>
           </Menu.Item>
         </div>

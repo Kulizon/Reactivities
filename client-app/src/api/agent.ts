@@ -11,7 +11,7 @@ const sleep = (delay: number) =>
   });
 
 axios.interceptors.response.use((response) =>
-  sleep(1000)
+  sleep(500)
     .then(() => {
       return response;
     })

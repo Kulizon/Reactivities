@@ -1,8 +1,6 @@
-import agent from "../../api/agent";
-import { useState, useEffect } from "react";
-import { Activity } from "../../interfaces/Activity";
+import { Routes, Route } from "react-router-dom";
 
-import { useStore } from "../../stores/store";
+import Home from "../pages/Home";
 
 import { Container } from "semantic-ui-react";
 import Header from "../Header/Header";
@@ -11,24 +9,33 @@ import { observer } from "mobx-react-lite";
 
 import "semantic-ui-css/semantic.min.css";
 import styles from "./App.module.scss";
-import LoadingComponent from "../UI/LoadingComponent/LoadingComponent";
+import ActivityForm from "../Activities/ActivityForm/ActivityForm";
+import ActivityDetails from "../Activities/ActivityDetails/ActivityDetails";
 
 function App() {
-  const { activityStore } = useStore();
-
-  useEffect(() => {
-    activityStore.loadActivities();
-  }, [activityStore]);
-
-  if (activityStore.isLoadingInitial)
-    return <LoadingComponent></LoadingComponent>;
-
   return (
     <>
       <Header></Header>
       <Container className={styles.main}>
-        <ActivityDashboard
-        ></ActivityDashboard>
+        <Routes>
+          <Route path="/" element={<Home></Home>}></Route>
+          <Route
+            path="/activities"
+            element={<ActivityDashboard></ActivityDashboard>}
+          ></Route>
+          <Route
+            path="/activities/:id"
+            element={<ActivityDetails></ActivityDetails>}
+          ></Route>
+          <Route
+            path="/create-activity"
+            element={<ActivityForm></ActivityForm>}
+          ></Route>
+          <Route
+            path="/edit-activity/:id"
+            element={<ActivityForm></ActivityForm>}
+          ></Route>
+        </Routes>
       </Container>
     </>
   );

@@ -1,30 +1,62 @@
 import { Activity } from "../../../interfaces/Activity";
 import { useStore } from "../../../stores/store";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { Button, Form, Segment } from "semantic-ui-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { observer } from "mobx-react-lite";
 
-interface Props {
-  editedActivity: Activity | undefined;
-}
+const ActivityForm = () => {
+  const [activityFormState, setActivityFormState] = useState<Activity>({
+    id: "",
+    title: "",
+    date: "",
+    category: "",
+    description: "",
+    city: "",
+    venue: "",
+  });
 
-const ActivityForm = ({ editedActivity }: Props) => {
-  const [target, setTarget] = useState("");
-  const { closeForm, createActivity, updateActivity, isSubmitting } =
+  const { createActivity, updateActivity, isSubmitting, loadActivity } =
     useStore().activityStore;
 
-  const isEdited = editedActivity;
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [activityFormState, setActivityFormState] = useState<Activity>({
-    id: isEdited ? editedActivity.id : "",
-    title: isEdited ? editedActivity.title : "",
-    date: isEdited ? editedActivity.date : "",
-    category: isEdited ? editedActivity.category : "",
-    description: isEdited ? editedActivity.description : "",
-    city: isEdited ? editedActivity.city : "",
-    venue: isEdited ? editedActivity.venue : "",
-  });
+  useEffect(() => {
+    const sendRequest = async () => {
+      setActivityFormState({
+        id: "",
+        title: "",
+        date: "",
+        category: "",
+        description: "",
+        city: "",
+        venue: "",
+      });
+
+      if (id) {
+        const editedActivity = await loadActivity(id);
+
+        console.log(editedActivity);
+
+        if (editedActivity) {
+          setActivityFormState({
+            id: editedActivity.id,
+            title: editedActivity.title,
+            date: editedActivity.date,
+            category: editedActivity.category,
+            description: editedActivity.description,
+            city: editedActivity.city,
+            venue: editedActivity.venue,
+          });
+        }
+      }
+    };
+    sendRequest();
+  }, [id, loadActivity]);
 
   const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setActivityFormState((prevState) => {
@@ -38,8 +70,14 @@ const ActivityForm = ({ editedActivity }: Props) => {
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isEdited) updateActivity(activityFormState);
-    else createActivity(activityFormState);
+    if (id)
+      updateActivity(activityFormState).then((id: string) =>
+        navigate(`/activities/${id}`)
+      );
+    else
+      createActivity(activityFormState).then((id: string) =>
+        navigate(`/activities/${id}`)
+      );
   };
 
   return (
@@ -87,7 +125,8 @@ const ActivityForm = ({ editedActivity }: Props) => {
           floated="right"
           type="submit"
           content="Cancel"
-          onClick={closeForm}
+          to={`/activities${id ? "/" + id : ""}`}
+          as={Link}
         ></Button>
       </Form>
     </Segment>

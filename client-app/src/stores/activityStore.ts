@@ -33,8 +33,7 @@ export default class ActivityStore {
       const activities = await agent.Activities.list();
 
       activities.forEach((a) => {
-        a.date = a.date.split("T")[0];
-        this.activityRegistry.set(a.id, a);
+        this.setActivity(a);
       });
       this.setLoadingInitial(false);
     } catch (err) {
@@ -43,45 +42,73 @@ export default class ActivityStore {
     }
   };
 
-  highlightActivity = (id: string) => {
-    this.highlightedActivity = this.activityRegistry.get(id);
-    this.isFormOpen = false;
+  loadActivity = async (id: string) => {
+    this.isLoadingInitial = true;
+
+    const activity = this.getActivity(id);
+
+    if (activity) {
+      this.highlightedActivity = activity;
+      this.isLoadingInitial = false;
+      return activity;
+    }
+
+    try {
+      const activityFromDB = await agent.Activities.details(id);
+
+      console.log(activityFromDB);
+
+      runInAction(() => {
+        this.setActivity(activityFromDB);
+        this.highlightedActivity = activityFromDB;
+        this.isLoadingInitial = false;
+      });
+      return activityFromDB;
+    } catch (err) {
+      console.log(err);
+      this.isLoadingInitial = false;
+    }
   };
 
-  cancelHighlightedActivity = () => {
-    this.highlightedActivity = undefined;
+  private getActivity = (id: string) => {
+    return this.activityRegistry.get(id);
   };
 
-  openForm = () => {
-    this.isFormOpen = true;
-  };
-
-  closeForm = () => {
-    this.isFormOpen = false;
+  private setActivity = (activity: Activity) => {
+    activity.date = activity.date.split("T")[0];
+    this.activityRegistry.set(activity.id, activity);
   };
 
   createActivity = (activity: Activity) => {
-    this.isSubmitting = true;
-    const newActivity = { ...activity, id: uuid() };
+    return new Promise<string>((resolve) => {
+      this.isSubmitting = true;
+      const id = uuid();
+      const newActivity = { ...activity, id: id };
 
-    agent.Activities.create(newActivity).then(() => {
-      runInAction(() => {
-        this.activityRegistry.set(newActivity.id, newActivity);
-        this.isSubmitting = false;
-        this.isFormOpen = false;
+      agent.Activities.create(newActivity).then(() => {
+        runInAction(() => {
+          this.activityRegistry.set(newActivity.id, newActivity);
+          this.isSubmitting = false;
+          this.isFormOpen = false;
+          resolve(id);
+        });
       });
     });
   };
 
   updateActivity = (activity: Activity) => {
-    this.isSubmitting = true;
+    return new Promise<string>((resolve) => {
+      this.isSubmitting = true;
 
-    agent.Activities.update(activity).then(() => {
-      runInAction(() => {
-        this.activityRegistry.set(activity.id, activity);
-        this.highlightedActivity = activity;
-        this.isFormOpen = false;
-        this.isSubmitting = false;
+      agent.Activities.update(activity).then(() => {
+        runInAction(() => {
+          this.activityRegistry.set(activity.id, activity);
+          this.highlightedActivity = activity;
+          this.isFormOpen = false;
+          this.isSubmitting = false;
+
+          resolve(activity.id);
+        });
       });
     });
   };
