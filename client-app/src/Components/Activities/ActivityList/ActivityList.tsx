@@ -1,26 +1,22 @@
 import { useState } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { Activity } from "../../../interfaces/Activity";
+import { useStore } from "./../../../stores/store";
+import { observer } from "mobx-react-lite";
 
-interface Props {
-  activities: Activity[];
-  onHighlightActivity: (id: string) => void;
-  onDeleteActivity: (id: string) => void;
-  isSubmitting: boolean;
-}
-
-const ActivityList = ({
-  activities,
-  onHighlightActivity,
-  onDeleteActivity,
-  isSubmitting,
-}: Props) => {
+const ActivityList = () => {
   const [target, setTarget] = useState("");
+  const {
+    highlightActivity,
+    deleteActivity,
+    isSubmitting,
+    activitiesByDate,
+  } = useStore().activityStore;
 
   return (
     <Segment>
       <Item.Group divided>
-        {activities.map((a: Activity) => (
+        {activitiesByDate.map((a: Activity) => (
           <Item key={a.id}>
             <Item.Content>
               <Item.Header as={"a"}> {a.title}</Item.Header>
@@ -31,14 +27,14 @@ const ActivityList = ({
                   content="View"
                   floated="right"
                   color="blue"
-                  onClick={() => onHighlightActivity(a.id)}
+                  onClick={() => highlightActivity(a.id)}
                 ></Button>
                 <Button
                   content="Delete"
                   floated="right"
                   color="red"
                   onClick={() => {
-                    onDeleteActivity(a.id);
+                    deleteActivity(a.id);
                     setTarget(a.id);
                   }}
                   loading={isSubmitting && a.id === target}
@@ -53,4 +49,4 @@ const ActivityList = ({
   );
 };
 
-export default ActivityList;
+export default observer(ActivityList);

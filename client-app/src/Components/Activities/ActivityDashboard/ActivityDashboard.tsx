@@ -1,91 +1,33 @@
-import { useState } from "react";
-
 import { Activity } from "../../../interfaces/Activity";
+import { useStore } from "../../../stores/store";
+import { observer } from "mobx-react-lite";
 
 import { Grid, List } from "semantic-ui-react";
 import ActivityList from "../ActivityList/ActivityList";
 import ActivityDetails from "../ActivityDetails/ActivityDetails";
 import ActivityForm from "../ActivityForm/ActivityForm";
 
-interface Props {
-  activities: Activity[];
-  onDeleteActivity: (id: string) => void;
-  isSubmitting: boolean;
-  editMode: boolean;
-  onHighlightActivity: (id: string) => void;
-  onCancelHighlightedActivity: () => void;
-  highlightedActivity: Activity | undefined;
-  onEndEdit: () => void;
-  onStartEdit: () => void;
-  onSubmitEdit: (editedActivity: Activity) => void;
-  onSubmitCreate: (activity: Activity) => void;
-  onEndCreate: () => void;
-  onStartCreate: () => void;
-  createMode: boolean;
-  isDeleteSubmitting: boolean;
-}
+const ActivityDashboard = () => {
+  const { highlightedActivity, isFormOpen } = useStore().activityStore;
 
-const ActivityDashboard = ({
-  activities,
-  onDeleteActivity,
-  isSubmitting,
-  onHighlightActivity,
-  onCancelHighlightedActivity,
-  editMode,
-  highlightedActivity,
-  onStartEdit,
-  onEndEdit,
-  onSubmitEdit,
-  onSubmitCreate,
-  onEndCreate,
-  createMode,
-  isDeleteSubmitting,
-}: Props) => {
   return (
     <Grid>
       <Grid.Column width={10}>
-        <ActivityList
-          activities={activities}
-          onHighlightActivity={onHighlightActivity}
-          onDeleteActivity={onDeleteActivity}
-          isSubmitting={isDeleteSubmitting}
-        ></ActivityList>
+        <ActivityList></ActivityList>
       </Grid.Column>
       <Grid.Column width={6}>
-        {!editMode && !isSubmitting && !createMode && highlightedActivity && (
-          <ActivityDetails
-            activity={highlightedActivity}
-            onCancelHighlightedActivity={onCancelHighlightedActivity}
-            onStartEdit={onStartEdit}
-          ></ActivityDetails>
+        {!isFormOpen && highlightedActivity && (
+          <ActivityDetails activity={highlightedActivity}></ActivityDetails>
         )}
-        {editMode && !createMode && (
-          <ActivityForm
-            onEndEdit={onEndEdit}
-            editedActivity={highlightedActivity}
-            editMode={editMode}
-            onSubmitEdit={onSubmitEdit}
-            isSubmitting={isSubmitting}
-            createMode={createMode}
-            onSubmitCreate={onSubmitCreate}
-            onEndCreate={onEndCreate}
-          ></ActivityForm>
+        {isFormOpen && !highlightedActivity && (
+          <ActivityForm editedActivity={undefined}></ActivityForm>
         )}
-        {createMode && (
-          <ActivityForm
-            onEndEdit={onEndEdit}
-            editedActivity={undefined}
-            editMode={editMode}
-            onSubmitEdit={onSubmitEdit}
-            isSubmitting={isSubmitting}
-            createMode={createMode}
-            onSubmitCreate={onSubmitCreate}
-            onEndCreate={onEndCreate}
-          ></ActivityForm>
+        {isFormOpen && highlightedActivity && (
+          <ActivityForm editedActivity={highlightedActivity}></ActivityForm>
         )}
       </Grid.Column>
     </Grid>
   );
 };
 
-export default ActivityDashboard;
+export default observer(ActivityDashboard);

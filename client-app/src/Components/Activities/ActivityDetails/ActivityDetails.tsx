@@ -1,18 +1,17 @@
 import { Activity } from "../../../interfaces/Activity";
+import { useStore } from "../../../stores/store";
+import { observer } from "mobx-react-lite";
 
 import { Button, Card, Image } from "semantic-ui-react";
 
 interface Props {
   activity: Activity;
-  onCancelHighlightedActivity: () => void;
-  onStartEdit: (editedActivity: Activity) => void;
 }
 
-const ActivityDetails = ({
-  activity,
-  onCancelHighlightedActivity,
-  onStartEdit,
-}: Props) => {
+const ActivityDetails = ({ activity }: Props) => {
+  const { cancelHighlightedActivity, openForm, highlightActivity } =
+    useStore().activityStore;
+
   return (
     <Card fluid>
       <Image
@@ -33,13 +32,16 @@ const ActivityDetails = ({
             basic
             color="blue"
             content="Edit"
-            onClick={() => onStartEdit(activity)}
+            onClick={() => {
+              highlightActivity(activity.id);
+              openForm();
+            }}
           ></Button>
           <Button
             basic
             color="grey"
             content="Cancel"
-            onClick={onCancelHighlightedActivity}
+            onClick={cancelHighlightedActivity}
           ></Button>
         </Button.Group>
       </Card.Content>
@@ -47,4 +49,4 @@ const ActivityDetails = ({
   );
 };
 
-export default ActivityDetails;
+export default observer(ActivityDetails);

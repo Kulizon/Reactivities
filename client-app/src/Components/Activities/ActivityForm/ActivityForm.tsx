@@ -1,31 +1,20 @@
 import { Activity } from "../../../interfaces/Activity";
+import { useStore } from "../../../stores/store";
 
 import { Button, Form, Segment } from "semantic-ui-react";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { observer } from "mobx-react-lite";
 
 interface Props {
-  onEndEdit: () => void;
   editedActivity: Activity | undefined;
-  editMode: boolean;
-  onSubmitEdit: (editedActivity: Activity) => void;
-  isSubmitting: boolean;
-  onSubmitCreate: (activity: Activity) => void;
-  createMode: boolean;
-  onEndCreate: () => void;
 }
 
-const ActivityForm = ({
-  onEndEdit,
-  editedActivity,
-  editMode,
-  onSubmitEdit,
-  onSubmitCreate,
-  isSubmitting,
-  onEndCreate,
-}: Props) => {
+const ActivityForm = ({ editedActivity }: Props) => {
   const [target, setTarget] = useState("");
+  const { closeForm, createActivity, updateActivity, isSubmitting } =
+    useStore().activityStore;
 
-  const isEdited = editedActivity && editMode;
+  const isEdited = editedActivity;
 
   const [activityFormState, setActivityFormState] = useState<Activity>({
     id: isEdited ? editedActivity.id : "",
@@ -49,8 +38,8 @@ const ActivityForm = ({
   const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (editMode) onSubmitEdit(activityFormState);
-    else onSubmitCreate(activityFormState);
+    if (isEdited) updateActivity(activityFormState);
+    else createActivity(activityFormState);
   };
 
   return (
@@ -98,11 +87,11 @@ const ActivityForm = ({
           floated="right"
           type="submit"
           content="Cancel"
-          onClick={editMode ? onEndEdit : onEndCreate}
+          onClick={closeForm}
         ></Button>
       </Form>
     </Segment>
   );
 };
 
-export default ActivityForm;
+export default observer(ActivityForm);

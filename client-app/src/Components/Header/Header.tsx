@@ -1,12 +1,16 @@
 import { Button, Container, Menu } from "semantic-ui-react";
+import { useStore } from "../../stores/store";
 
 import styles from "./Header.module.scss";
 
-interface Props {
-  onStartCreate: () => void;
-}
+const Header = () => {
+  const { openForm, cancelHighlightedActivity } = useStore().activityStore;
 
-const Header = ({ onStartCreate }: Props) => {
+  const openCreateFormHandler = () => {
+    openForm();
+    cancelHighlightedActivity();
+  };
+
   return (
     <Menu inverted fixed="top" className={styles.header}>
       <Container>
@@ -20,7 +24,7 @@ const Header = ({ onStartCreate }: Props) => {
             <Button
               positive
               content="Create Activity"
-              onClick={onStartCreate}
+              onClick={openCreateFormHandler}
             ></Button>
           </Menu.Item>
         </div>
