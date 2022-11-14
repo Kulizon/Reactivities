@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
 
 import { Grid } from "semantic-ui-react";
-import ActivityList from "../ActivityList/ActivityList";
-import ActivityForm from "../ActivityForm/ActivityForm";
+import ActivityList from "./ActivityList/ActivityList";
+import ActivityFilters from "./ActivityFilters/ActivityFilters";
 import LoadingComponent from "../../UI/LoadingComponent/LoadingComponent";
 
 const ActivityDashboard = () => {
@@ -14,7 +14,7 @@ const ActivityDashboard = () => {
 
   useEffect(() => {
     if (activityRegistry.size <= 1) loadActivities();
-  }, [activityStore]);
+  }, [activityStore, activityRegistry.size, loadActivities]);
 
   if (isLoadingInitial) return <LoadingComponent></LoadingComponent>;
 
@@ -23,7 +23,9 @@ const ActivityDashboard = () => {
       <Grid.Column width={10}>
         <ActivityList></ActivityList>
       </Grid.Column>
-      <Grid.Column width={6}></Grid.Column>
+      <Grid.Column width={6}>
+        <ActivityFilters></ActivityFilters>
+      </Grid.Column>
     </Grid>
   );
 };

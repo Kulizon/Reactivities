@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useStore } from "../../../stores/store";
 import { observer } from "mobx-react-lite";
-import { useParams, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { useParams } from "react-router";
 
-import { Button, Card, Image } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import LoadingComponent from "./../../UI/LoadingComponent/LoadingComponent";
+import ActivityDetaileHeader from "./ActivityDetailedHeader";
+import ActivityDetailedInfo from "./ActivityDetailedInfo";
+import ActivityDetailedSidebar from "./ActivityDetailedSidebar";
 
 const ActivityDetails = () => {
   const { id } = useParams();
@@ -30,38 +32,15 @@ const ActivityDetails = () => {
   if (!activity || !id) return <h1>No activity found</h1>;
 
   return (
-    <Card fluid>
-      <Image
-        src={`/assets/categoryImages/${activity.category}.jpg`}
-        wrapped
-        ui={false}
-      />
-      <Card.Content>
-        <Card.Header>{activity.title}</Card.Header>
-        <Card.Meta>
-          <span className="date">{activity.date}</span>
-        </Card.Meta>
-        <Card.Description>{activity.description}</Card.Description>
-      </Card.Content>
-      <Card.Content extra>
-        <Button.Group widths={2}>
-          <Button
-            basic
-            color="blue"
-            content="Edit"
-            to={`/edit-activity/${activity.id}`}
-            as={Link}
-          ></Button>
-          <Button
-            basic
-            color="grey"
-            content="Cancel"
-            to={`/activities`}
-            as={Link}
-          ></Button>
-        </Button.Group>
-      </Card.Content>
-    </Card>
+    <Grid>
+      <Grid.Column width={10}>
+        <ActivityDetaileHeader activity={activity}></ActivityDetaileHeader>
+        <ActivityDetailedInfo activity={activity}></ActivityDetailedInfo>
+      </Grid.Column>
+      <Grid.Column width={6}>
+        <ActivityDetailedSidebar></ActivityDetailedSidebar>
+      </Grid.Column>
+    </Grid>
   );
 };
 

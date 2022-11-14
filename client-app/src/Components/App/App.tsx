@@ -8,7 +8,6 @@ import ActivityDashboard from "../Activities/ActivityDashboard/ActivityDashboard
 import { observer } from "mobx-react-lite";
 
 import "semantic-ui-css/semantic.min.css";
-import styles from "./App.module.scss";
 import ActivityForm from "../Activities/ActivityForm/ActivityForm";
 import ActivityDetails from "../Activities/ActivityDetails/ActivityDetails";
 
@@ -16,7 +15,7 @@ function App() {
   return (
     <>
       <Header></Header>
-      <Container className={styles.main}>
+      <Container className='main'>
         <Routes>
           <Route path="/" element={<Home></Home>}></Route>
           <Route
