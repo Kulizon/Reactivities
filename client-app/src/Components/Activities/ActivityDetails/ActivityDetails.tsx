@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useParams } from "react-router";
 
 import { Grid } from "semantic-ui-react";
-import LoadingComponent from "./../../UI/LoadingComponent/LoadingComponent";
+import LoadingComponent from "../../UI/LoadingComponent";
 import ActivityDetaileHeader from "./ActivityDetailedHeader";
 import ActivityDetailedInfo from "./ActivityDetailedInfo";
 import ActivityDetailedSidebar from "./ActivityDetailedSidebar";

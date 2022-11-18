@@ -1,11 +1,9 @@
 import { Button, Container, Menu } from "semantic-ui-react";
 import { NavLink } from "react-router-dom";
 
-import styles from "./Header.module.scss";
-
 const Header = () => {
   return (
-    <Menu inverted fixed="top" className={styles.header}>
+    <Menu inverted fixed="top" className={"main-header"}>
       <Container>
         <Menu.Item header as={NavLink} to="/" end="true">
           <img src="assets/logo.png" alt="Logo" />
@@ -16,6 +14,12 @@ const Header = () => {
             name="Activities"
             as={NavLink}
             to="/activities"
+            end="true"
+          ></Menu.Item>
+          <Menu.Item
+            name="Test Errors"
+            as={NavLink}
+            to="/test-errors"
             end="true"
           ></Menu.Item>
           <Menu.Item name="Activities">

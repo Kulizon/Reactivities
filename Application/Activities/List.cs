@@ -7,17 +7,18 @@ using Domain;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Application.Core;
 
 namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<List<Activity>>
+        public class Query : IRequest<Result<List<Activity>>>
         {
 
         }
 
-        public class Handler : IRequestHandler<Query, List<Activity>>
+        public class Handler : IRequestHandler<Query, Result<List<Activity>>>
         {
             private readonly DataContext _context;
             private ILogger<List> _logger { get; }
@@ -29,11 +30,11 @@ namespace Application.Activities
                 this._context = context;
             }
 
-            public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Activity>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    // Handle cancel of request 
+                    // Handle cancel of request  
                     cancellationToken.ThrowIfCancellationRequested();
                 }
                 catch (Exception ex) when (ex is TaskCanceledException)
@@ -41,7 +42,7 @@ namespace Application.Activities
                     this._logger.LogInformation($"Task was canceled");
                 }
 
-                return await this._context.Activities.ToListAsync();
+                return Result<List<Activity>>.Success(await this._context.Activities.ToListAsync());
             }
         }
     }

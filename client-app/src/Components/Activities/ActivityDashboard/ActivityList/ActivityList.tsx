@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import ActivityTile from "../ActivityTile/ActivityTile";
 
 const ActivityList = () => {
-  const { activitiesByDate, groupedActivities } = useStore().activityStore;
+  const { groupedActivities } = useStore().activityStore;
 
   return (
     <>

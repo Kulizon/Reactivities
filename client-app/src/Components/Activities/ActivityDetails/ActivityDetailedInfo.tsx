@@ -25,7 +25,7 @@ export default observer(function ActivityDetailedInfo({ activity }: Props) {
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>{activity.date}</span>
+            <span>{activity.date?.toISOString().split("T")[0]}</span>
           </Grid.Column>
         </Grid>
       </Segment>

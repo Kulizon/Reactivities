@@ -1,5 +1,6 @@
 
 using API.Extensions;
+using API.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -16,6 +17,8 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 ApplicationExtensionsMethods.AddAppExtensions(builder.Services, connection);
 
 var app = builder.Build();
+
+// app.UseMiddleware<ExceptionsMiddleware>();
 
 // Make migrations
 var scope = app.Services.CreateScope();
@@ -35,9 +38,11 @@ catch (Exception ex)
 }
 
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }

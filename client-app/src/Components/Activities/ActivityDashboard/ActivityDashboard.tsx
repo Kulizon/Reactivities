@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 import { Grid } from "semantic-ui-react";
 import ActivityList from "./ActivityList/ActivityList";
 import ActivityFilters from "./ActivityFilters/ActivityFilters";
-import LoadingComponent from "../../UI/LoadingComponent/LoadingComponent";
+import LoadingComponent from "../../UI/LoadingComponent";
 
 const ActivityDashboard = () => {
   const { activityStore } = useStore();

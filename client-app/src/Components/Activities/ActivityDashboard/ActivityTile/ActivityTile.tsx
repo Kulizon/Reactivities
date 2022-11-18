@@ -30,7 +30,8 @@ const ActivityTile = ({ activity }: Props) => {
       </Segment>
       <Segment>
         <span>
-          <Icon name="clock"></Icon> {activity.date}
+          <Icon name="clock"></Icon>{" "}
+          {activity.date?.toISOString().split("T")[0]}
           <Icon name="marker"></Icon> {activity.venue}
         </span>
       </Segment>
